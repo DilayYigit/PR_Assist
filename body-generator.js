@@ -34,8 +34,7 @@ export async function generateBody(context) {
         }
 
 
-        const prompt = [`The changes in this pull request are:\n\n${diffFiles}\n\nPlease provide a concise description of the changes.`];
-
+        const prompt = [`The changes in this pull request are:\n\n${diffFiles}\n\nPlease provide a concise description and a title of the changes. Return a response in this format: Title: Description:`];
         const client = new OpenAIClient(endpoint, new AzureKeyCredential(azureApiKey));
         const deploymentId = "gpt35Test";
         const result = await client.getCompletions(deploymentId, prompt);
