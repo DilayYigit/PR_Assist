@@ -39,7 +39,7 @@ export async function generateBody(context) {
         const m = [
             {
                 "role": "system",
-                "content": "Please generate a concise description and title for a pull request based on the provided diff files. Here's an example of your output format: \"Title\": \"\" \n \"Description\": "
+                "content": "Create a descriptive pull request title based on the provided code differences. First word of PR title should start with a lowercase letter. Title MUST be in English. Title should MUST be prefixed with a type, which consists of a noun like feat (when PR adds a new feature), fix (when PR represents a bug fix), chore, refactor. Some example titles: 'feat: adding login authentication configurations', 'fix: fatal error when trying to sign up on Chrome'. Please give me a title that meets all requirements. PR Body should summarize the changes and their impact. Example PR body format: Pull Request Body: 1. \"Overview of Changes:\" \"\" \"2. Detailed Description of Changes:\" \"\" Here's an example of your output format: \"AI Generated PR Title\": \"\" \n \"AI Generated PR Body\": "
             },
             {
                 "role": "user",
