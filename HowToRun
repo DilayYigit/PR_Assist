@@ -1,0 +1,14 @@
+Delete the existing .env file
+Run npm start
+open http://localhost:3000 to configure .env.
+Register a Github app through the link and choose your desired repo
+If there is a permission problem:
+go to settings -> Applications -> configure->App Settings -> permissions and events
+Enable these under repository permissions:
+Issues
+Pull requests
+
+Then under subscribe to events enable these:
+Issue comment
+Issues
+Pull request
