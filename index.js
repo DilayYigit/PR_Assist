@@ -11,7 +11,6 @@ export default (app) => {
             body
         });
 
-        // Create a comment on the pull request
         return context.octokit.issues.createComment(params);
     });
 

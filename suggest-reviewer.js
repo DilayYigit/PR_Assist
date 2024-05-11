@@ -2,7 +2,7 @@ import { Octokit } from "octokit";
 import axios from 'axios';
 
 const octokit = new Octokit({
-    auth: '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'
+    auth: 'YOUR_GITHUB_TOKEN' // TODO: REPLACE WITH YOUR GITHUB TOKEN
   })
 
 export async function suggestReviewer(context) {
