@@ -13,16 +13,13 @@ export default (app) => {
         return context.octokit.issues.createComment(params);
     });
 
-    // //TODO Fix this
-
     app.on('issue_comment.created', async (context) => {
         const comment = context.payload.comment.body;
         const pullRequest = context.payload.issue.pull_request;
+        const newTitle = body.split("Pull Request Body:")[0].trim();
+        const newDescription = body.split("Pull Request Body:")[1].trim();
 
-        if (pullRequest && comment === 'Update') {
-            const newTitle = 'Updated Title'; // Replace with the desired new title
-            const newDescription = 'Updated Description'; // Replace with the desired new description
-
+        if (pullRequest && comment.trim().toLowerCase() === 'update') {
             const updateParams = context.issue({
                 title: newTitle,
                 body: newDescription
