@@ -1,9 +1,5 @@
-import { Octokit } from "octokit";
+//import { Octokit } from "octokit";
 import axios from 'axios';
-
-const octokit = new Octokit({
-    auth: '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'
-  })
 
 export async function suggestReviewer(context) {
 
@@ -15,7 +11,7 @@ export async function suggestReviewer(context) {
         })
 
         try {
-            const response = await octokit.request(`GET /repos/${info.owner}/${info.repo}/activity`, {
+            const response = await axios.get(`https://api.github.com/repos/${info.owner}/${info.repo}/activity`, {
                 headers: {
                     'Accept': 'application/vnd.github+json',
                 }
@@ -32,7 +28,7 @@ export async function suggestReviewer(context) {
             }
         
             //console.log(contributor);
-            const response2 = await octokit.request(`POST /repos/${info.owner}/${info.repo}/pulls/${info.pull_number}/requested_reviewers`, {
+            const response2 = await axios.post(`https://api.github.com/repos/${info.owner}/${info.repo}/pulls/${info.pull_number}/requested_reviewers`, {
                 reviewers: [
                     contributor
                 ],
