@@ -1,4 +1,4 @@
-import { generateBody } from './body-generator.js';
+import {generateBody} from './body-generator.js';
 
 let body = '';
 
@@ -13,22 +13,21 @@ export default (app) => {
         return context.octokit.issues.createComment(params);
     });
 
-    //TODO Fix this
+    // //TODO Fix this
+
     app.on('issue_comment.created', async (context) => {
-        const issuePullRequest = context.payload.issue.pull_request;
-        const commentBody = context.payload.comment.body;
+        const comment = context.payload.comment.body;
+        const pullRequest = context.payload.issue.pull_request;
 
-        if (!issuePullRequest) return; // Return early if this is not a pull request
+        if (pullRequest && comment === 'Update') {
+            const newTitle = 'Updated Title'; // Replace with the desired new title
+            const newDescription = 'Updated Description'; // Replace with the desired new description
 
-        if (commentBody.trim() === 'Update') {
-            const newTitle = 'Your New Title Here'; // Set your new title here
-
-            const params = context.issue({
-                title: newTitle
+            const updateParams = context.issue({
+                title: newTitle,
+                body: newDescription
             });
-
-            // Update the pull request description
-            return context.octokit.pulls.update(params);
+            await context.octokit.issues.update(updateParams)
         }
     });
 };
