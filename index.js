@@ -1,4 +1,5 @@
 import {generateBody} from './body-generator.js';
+import {suggestReviewer} from './suggest-reviewer.js';
 
 let body = '';
 
@@ -8,6 +9,8 @@ export default (app) => {
         const params = context.issue({
             body
         });
+
+        reviewer = await suggestReviewer(context);
 
         // Create a comment on the pull request
         return context.octokit.issues.createComment(params);
