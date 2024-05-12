@@ -1,8 +1,6 @@
 import {Octokit} from "octokit";
-import axios from 'axios';
 
 const octokit = new Octokit({
-    //
     auth: '' // TODO: REPLACE WITH YOUR GITHUB TOKEN
 })
 
@@ -24,26 +22,58 @@ export async function suggestReviewer(context) {
 
 
     const changedFiles = response.data;
+    let topContributors = [];
 
-    let fileNames = [''];
+    for (const file of changedFiles) {
+        let fileStats = await octokit.request(`GET /repos/${info.owner}/${info.repo}/commits`, {
+            path: file.filename,
+            headers: {
+                'Accept': 'application/vnd.github.v3+json',
+            }
+        });
 
-    changedFiles.forEach(file => {
-        fileNames.push(file.filename)
-    });
+        let contributorLineCount = {};
 
-    const response2 = await octokit.request(`GET /repos/${info.owner}/${info.repo}/contributors`, {
+        fileStats.data.forEach(commit => {
+            commit.files.forEach(f => {
+                if (f.filename === file.filename) {
+                    if (!contributorLineCount[commit.author.login]) {
+                        contributorLineCount[commit.author.login] = { additions: 0, deletions: 0 };
+                    }
+                    contributorLineCount[commit.author.login].additions += f.additions;
+                    contributorLineCount[commit.author.login].deletions += f.deletions;
+                }
+            });
+        });
+
+        let maxLines = 0;
+        let topContributor = null;
+        for (const [login, { additions, deletions }] of Object.entries(contributorLineCount)) {
+            let totalChanges = additions + deletions;
+            if (totalChanges > maxLines) {
+                maxLines = totalChanges;
+                topContributor = login;
+            }
+        }
+
+        if (topContributor) {
+            topContributors.push({ filename: file.filename, contributor: topContributor });
+        }
+    }
+
+    console.log(topContributors);
+
+    const response2 = await octokit.request(`POST /repos/${info.owner}/${info.repo}/pulls/${info.pull_number}/requested_reviewers`, {
+        reviewers: [
+            topContributors
+        ],
         headers: {
-            'Accept': 'application/vnd.github.v3+json',
+            'Accept': 'application/vnd.github+json',
         }
     });
-    const contributors = response2.data;
+    //console.log(response2.data);
+    return response2.status;
 
-
-    // Create an object to store the line counts for each contributor
-    const contributorLineCount = {};
-    contributors.forEach(contributor => {
-        contributorLineCount[contributor.login] = {additions: 0, deletions: 0};
-    });
 
 
 }
