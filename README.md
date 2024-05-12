@@ -6,6 +6,12 @@ PR Assist acts like a virtual assistant for managing code contributions on GitHu
 - Providing smart recommendations for the title and description of their pull requests.
 - Streamlining the process of submitting and reviewing code changes, thus fostering better collaboration among development teams.
 
+##Group
+1. Dilay
+2. Maryam
+3. Atika
+4. Amir
+
 ## Setup
 
 1. Clone the repository and navigate to the root directory in your terminal.
