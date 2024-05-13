@@ -25,7 +25,6 @@ export async function suggestReviewer(context) {
             path: file.filename 
         });
         console.log(fileStats.data);
-        return;
 
         if (Array.isArray(fileStats.data) && fileStats.data) { 
             let contributorLineCount = {};

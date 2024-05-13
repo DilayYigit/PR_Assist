@@ -24,8 +24,7 @@ export async function suggestReviewer(context) {
             headers: { 'Accept': 'application/vnd.github.v3+json' },
             path: file.filename 
         });
-        console.log(fileStats.data);
-        return;
+        
 
         if (Array.isArray(fileStats.data) && fileStats.data) { 
             let contributorLineCount = {};
