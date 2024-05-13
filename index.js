@@ -8,8 +8,13 @@ export default (app) => {
     app.on('pull_request.opened', async (context) => {
         body = await generateBody(context);
         suggestedReviewer = await suggestReviewer(context, 0);
-        body += "\n\n Suggested Reviewer: @"
-        body += suggestedReviewer
+        if (suggestedReviewer === "No Suitable Reviewer Found!") {
+            body += "\n\n"
+            body += suggestedReviewer
+        } else {
+            body += "\n\n Suggested Reviewer: @"
+            body += suggestedReviewer
+        }
 
         const params = context.issue({
             body

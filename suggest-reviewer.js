@@ -3,10 +3,10 @@ import {Octokit} from "octokit";
 const octokit = new Octokit({
     auth: '' // TODO: REPLACE WITH YOUR GITHUB TOKEN
 })
-let suggesteeReviewer = ''
-let owener = ''
+let suggestedReviewer = ''
+let owner = ''
 let repo = ''
-let number = 0
+let pullNumber = 0
 
 export async function suggestReviewer(context, set) {
     if (set === 0) {
@@ -16,9 +16,9 @@ export async function suggestReviewer(context, set) {
             pull_number: context.payload.pull_request.number
         })
         const pullRequestOwner = context.payload.pull_request.user.login;
-        owener = info.owner
+        owner = info.owner
         repo = info.repo
-        number = info.pull_number
+        pullNumber = info.pull_number
 
         const response = await octokit.request(`GET /repos/${info.owner}/${info.repo}/pulls/${info.pull_number}/files`, {
             headers: {
@@ -39,7 +39,6 @@ export async function suggestReviewer(context, set) {
         const contributors = response2.data;
 
 
-        // Create an object to store the line counts for each contributor
         const contributorLineCount = {};
         contributors.forEach(contributor => {
             contributorLineCount[contributor.login] = 0;
@@ -75,22 +74,20 @@ export async function suggestReviewer(context, set) {
         );
         const contributorLineCountArray = Object.entries(filteredContributorLineCount);
         contributorLineCountArray.sort((a, b) => b[1] - a[1]);
-        // console.log(contributorLineCountArray);
 
         const nonOwnerContributor = Object.entries(filteredContributorLineCount).find(([key, value]) => key !== pullRequestOwner);
         if (nonOwnerContributor) {
-            // console.log(`Non-owner contributor: ${nonOwnerContributor[0]}`);
-            suggesteeReviewer = nonOwnerContributor[0]
-            return suggesteeReviewer;
+            suggestedReviewer = nonOwnerContributor[0]
+            return suggestedReviewer;
         } else {
             console.log("No Suitable Reviewer Found!");
+            return "No Suitable Reviewer Found!";
         }
     } else {
-        if (suggesteeReviewer !== '') {
-            console.log(suggesteeReviewer)
-            const response2 = await octokit.request(`POST /repos/${owener}/${repo}/pulls/${number}/requested_reviewers`, {
+        if (suggestedReviewer !== '') {
+            await octokit.request(`POST /repos/${owner}/${repo}/pulls/${pullNumber}/requested_reviewers`, {
                 reviewers: [
-                    suggesteeReviewer
+                    suggestedReviewer
                 ],
                 headers: {
                     'Accept': 'application/vnd.github+json',
