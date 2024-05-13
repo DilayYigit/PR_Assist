@@ -3,13 +3,12 @@ import {Octokit} from "octokit";
 const octokit = new Octokit({
     auth: '' // TODO: REPLACE WITH YOUR GITHUB TOKEN
 })
+let suggesteeReviewer = ''
+let owener = ''
+let repo = ''
+let number = 0
 
 export async function suggestReviewer(context, set) {
-    let suggesteeReviewer = ''
-    let owener = ''
-    let repo = ''
-    let number = 0
-
     if (set === 0) {
         const info = await context.pullRequest({
             owner: context.payload.repository.owner.login,
@@ -69,7 +68,6 @@ export async function suggestReviewer(context, set) {
             })
 
         }
-        console.log(contributorLineCount)
 
         const filteredContributorLineCount = Object.fromEntries(
             Object.entries(contributorLineCount)
@@ -77,11 +75,11 @@ export async function suggestReviewer(context, set) {
         );
         const contributorLineCountArray = Object.entries(filteredContributorLineCount);
         contributorLineCountArray.sort((a, b) => b[1] - a[1]);
-        console.log(contributorLineCountArray);
+        // console.log(contributorLineCountArray);
 
         const nonOwnerContributor = Object.entries(filteredContributorLineCount).find(([key, value]) => key !== pullRequestOwner);
         if (nonOwnerContributor) {
-            console.log(`Non-owner contributor: ${nonOwnerContributor[0]}`);
+            // console.log(`Non-owner contributor: ${nonOwnerContributor[0]}`);
             suggesteeReviewer = nonOwnerContributor[0]
             return suggesteeReviewer;
         } else {
@@ -89,6 +87,7 @@ export async function suggestReviewer(context, set) {
         }
     } else {
         if (suggesteeReviewer !== '') {
+            console.log(suggesteeReviewer)
             const response2 = await octokit.request(`POST /repos/${owener}/${repo}/pulls/${number}/requested_reviewers`, {
                 reviewers: [
                     suggesteeReviewer
