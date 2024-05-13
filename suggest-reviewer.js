@@ -1,50 +1,46 @@
-import {Octokit} from "octokit";
+import { Octokit } from "octokit";
 
 const octokit = new Octokit({
-    auth: '' // TODO: REPLACE WITH YOUR GITHUB TOKEN
-})
+    auth: ''   
+});
 
 export async function suggestReviewer(context) {
-
-
     const info = await context.pullRequest({
         owner: context.payload.repository.owner.login,
         repo: context.payload.repository.name,
         pull_number: context.payload.pull_request.number
-    })
-
-
-    const response = await octokit.request(`GET /repos/${info.owner}/${info.repo}/pulls/${info.pull_number}/files`, {
-        headers: {
-            'Accept': 'application/vnd.github.v3+json',
-        }
     });
 
+    const response = await octokit.request(`GET /repos/${info.owner}/${info.repo}/pulls/${info.pull_number}/files`, {
+        headers: { 'Accept': 'application/vnd.github.v3+json' }
+    });
 
     const changedFiles = response.data;
     let topContributors = [];
 
     for (const file of changedFiles) {
+        console.log(file.filename);
         let fileStats = await octokit.request(`GET /repos/${info.owner}/${info.repo}/commits`, {
-            path: file.filename,
-            headers: {
-                'Accept': 'application/vnd.github.v3+json',
-            }
+            headers: { 'Accept': 'application/vnd.github.v3+json' },
+            path: file.filename 
         });
 
-        let contributorLineCount = {};
+        if (Array.isArray(fileStats.data) && fileStats.data) { 
+            let contributorLineCount = {};
 
-        fileStats.data.forEach(commit => {
-            commit.files.forEach(f => {
-                if (f.filename === file.filename) {
-                    if (!contributorLineCount[commit.author.login]) {
-                        contributorLineCount[commit.author.login] = { additions: 0, deletions: 0 };
+            fileStats.data.forEach(commit => {
+                commit.files.forEach(f => {
+                    if (f.filename === file.filename) {
+                        const authorLogin = commit.author?.login || 'unknown';
+                        if (!contributorLineCount[authorLogin]) {
+                            contributorLineCount[authorLogin] = { additions: 0, deletions: 0 };
+                        }
+                        contributorLineCount[authorLogin].additions += f.additions;
+                        contributorLineCount[authorLogin].deletions += f.deletions;
                     }
-                    contributorLineCount[commit.author.login].additions += f.additions;
-                    contributorLineCount[commit.author.login].deletions += f.deletions;
-                }
+                });
             });
-        });
+        }
 
         let maxLines = 0;
         let topContributor = null;
@@ -61,21 +57,13 @@ export async function suggestReviewer(context) {
         }
     }
 
-    console.log(topContributors);
+    console.log(topContributors);  
 
     const response2 = await octokit.request(`POST /repos/${info.owner}/${info.repo}/pulls/${info.pull_number}/requested_reviewers`, {
-        reviewers: [
-            topContributors
-        ],
-        headers: {
-            'Accept': 'application/vnd.github+json',
-        }
+        reviewers: topContributors.map(contributor => contributor.contributor),
+        headers: { 'Accept': 'application/vnd.github+json' },
     });
-    //console.log(response2.data);
+    console.log(response2.data);
     return response2.status;
-
-
-
 }
-
 
