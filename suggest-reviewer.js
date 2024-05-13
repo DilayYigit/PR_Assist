@@ -1,8 +1,6 @@
 import {Octokit} from "octokit";
-import axios from 'axios';
 
 const octokit = new Octokit({
-    //
     auth: '' // TODO: REPLACE WITH YOUR GITHUB TOKEN
 })
 
@@ -21,12 +19,8 @@ export async function suggestReviewer(context) {
             'Accept': 'application/vnd.github.v3+json',
         }
     });
-
-
     const changedFiles = response.data;
-
-    let fileNames = [''];
-
+    let fileNames = [];
     changedFiles.forEach(file => {
         fileNames.push(file.filename)
     });
@@ -42,10 +36,34 @@ export async function suggestReviewer(context) {
     // Create an object to store the line counts for each contributor
     const contributorLineCount = {};
     contributors.forEach(contributor => {
-        contributorLineCount[contributor.login] = {additions: 0, deletions: 0};
+        contributorLineCount[contributor.login] = 0;
     });
 
 
+    const response3 = await octokit.request(`GET /repos/${info.owner}/${info.repo}/commits`, {
+        headers: {
+            'Accept': 'application/vnd.github.v3+json',
+        }
+    });
+    for (const commit of response3.data) {
+        const responseTemp = await octokit.request(`GET /repos/${info.owner}/${info.repo}/commits/${commit.sha}`, {
+            headers: {
+                'Accept': 'application/vnd.github.v3+json',
+            }
+        });
+        const filesChanged = responseTemp.data.files.map(file => file);
+        fileNames.forEach(fileName => {
+            const filesExist = filesChanged.some(file => file.filename.includes(fileName));
+            if (filesExist) {
+                const fileFound = filesChanged.find(file => file.filename.includes(fileName));
+                console.log(fileFound, "AUTHOR:", commit.author?.login)
+                contributorLineCount[commit.author?.login] += fileFound.additions;
+                contributorLineCount[commit.author?.login] += fileFound.deletions;
+            }
+        })
+
+    }
+    console.log(contributorLineCount)
 }
 
 
