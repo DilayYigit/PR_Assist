@@ -15,9 +15,9 @@ PR Assist acts like a virtual assistant for managing code contributions on GitHu
     npm start
     ```
     
-    3. Open your web browser and go to `http://localhost:3000`.
+    3. Open your web browser and go to [http://localhost:3000](http://localhost:3000).
 2. Alternatively, you can go to this link directly:
-    1. Go to `https://cs453.azurewebsites.net/probot`
+    1. Go to [https://cs453.azurewebsites.net/probot](https://cs453.azurewebsites.net/probot).
        
 3. Click on **Register GitHub App**, enter a name for your app, and click **Create**.
 4. Decide on which account you want to install this app and proceed to installation.
