@@ -85,7 +85,7 @@ export async function suggestReviewer(context, set) {
             suggesteeReviewer = nonOwnerContributor[0]
             return suggesteeReviewer;
         } else {
-            console.log("Empty");
+            console.log("No Suitable Reviewer Found!");
         }
     } else {
         if (suggesteeReviewer !== '') {
