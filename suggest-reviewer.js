@@ -30,6 +30,8 @@ export async function suggestReviewer(context, set) {
         changedFiles.forEach(file => {
             fileNames.push(file.filename)
         });
+        console.log(fileStats.data);
+        return;
 
         const response2 = await octokit.request(`GET /repos/${info.owner}/${info.repo}/contributors`, {
             headers: {
