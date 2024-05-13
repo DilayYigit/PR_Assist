@@ -56,7 +56,6 @@ export async function suggestReviewer(context) {
             const filesExist = filesChanged.some(file => file.filename.includes(fileName));
             if (filesExist) {
                 const fileFound = filesChanged.find(file => file.filename.includes(fileName));
-                console.log(fileFound, "AUTHOR:", commit.author?.login)
                 contributorLineCount[commit.author?.login] += fileFound.additions;
                 contributorLineCount[commit.author?.login] += fileFound.deletions;
             }
@@ -64,6 +63,15 @@ export async function suggestReviewer(context) {
 
     }
     console.log(contributorLineCount)
+
+    const filteredContributorLineCount = Object.fromEntries(
+        Object.entries(contributorLineCount)
+            .filter(([key, value]) => key !== 'undefined' && !isNaN(value))
+    );
+    const contributorLineCountArray = Object.entries(filteredContributorLineCount);
+    contributorLineCountArray.sort((a, b) => b[1] - a[1]);
+    console.log(contributorLineCountArray);
+    return contributorLineCountArray[0][0];
 }
 
 
