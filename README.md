@@ -7,19 +7,22 @@ PR Assist acts like a virtual assistant for managing code contributions on GitHu
 - Streamlining the process of submitting and reviewing code changes, thus fostering better collaboration among development teams.
 
 ## Setup
-
-1. Clone the repository and navigate to the root directory in your terminal.
-2. Run the following commands:
-```
-npm install
-npm start
-```
-
-3. Open your web browser and go to `http://localhost:3000`.
-4. Click on **Register GitHub App**, enter a name for your app, and click **Create**.
-5. Decide on which account you want to install this app and proceed to installation.
-6. Choose the repositories the bot should have access to and install the app.
-7. You'll be redirected to your app's page. Navigate to **app settings -> Permissions & events -> Repository permissions**.
+1. To run our but, you may choose to install it by cloning the code:    
+    1. Clone the repository and navigate to the root directory in your terminal.
+    2. Run the following commands:
+    ```
+    npm install
+    npm start
+    ```
+    
+    3. Open your web browser and go to `http://localhost:3000`.
+2. Alternatively, you can go to this link directly:
+    1. Go to `https://cs453.azurewebsites.net/probot`
+       
+3. Click on **Register GitHub App**, enter a name for your app, and click **Create**.
+4. Decide on which account you want to install this app and proceed to installation.
+5. Choose the repositories the bot should have access to and install the app.
+6. You'll be redirected to your app's page. Navigate to **app settings -> Permissions & events -> Repository permissions**.
 
 ### Configuring Permissions
 
