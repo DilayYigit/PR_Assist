@@ -56,7 +56,7 @@ export async function generateBody(context) {
 
 
 
-        console.log(result2.choices[0])
+        // console.log(result2.choices[0])
         return result2.choices[0].message.content
 
 

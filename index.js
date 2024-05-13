@@ -7,7 +7,7 @@ let suggestedReviewer = '';
 export default (app) => {
     app.on('pull_request.opened', async (context) => {
         body = await generateBody(context);
-        suggestedReviewer = await suggestReviewer(context);
+        suggestedReviewer = await suggestReviewer(context, 0);
         body += "\n\n Suggested Reviewer: @"
         body += suggestedReviewer
 
@@ -31,6 +31,7 @@ export default (app) => {
                 title: newTitle,
                 body: newDescription
             });
+            await suggestReviewer(context, 1);
             await context.octokit.issues.update(updateParams)
         }
     });
