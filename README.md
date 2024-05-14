@@ -55,6 +55,9 @@ When you create a new pull request, PR Assist will display title and description
 - If you agree with the suggestions, comment **Update** on your pull request, and the bot will automatically update it for you.
 - If you prefer to modify some suggestions, you can manually edit your pull request using the suggestions as a guide.
 
+## Generate Suggested Reviewer
+Reviewer will be selected based on the number of codes they have added/deleted from the files that are changed in that pull request, in two cases there will be no suitable reviewer found: Either the author is the sole contributer if that project or files, or if the file is newly created by the author of the PR
+
 ## License
 
 ISC License
