@@ -38,6 +38,8 @@ export default (app) => {
             });
             await suggestReviewer(context, 1);
             await context.octokit.issues.update(updateParams)
+            await suggestReviewer(context, 2);
+
         }
     });
 };

@@ -76,14 +76,14 @@ export async function suggestReviewer(context, set) {
         contributorLineCountArray.sort((a, b) => b[1] - a[1]);
 
         const nonOwnerContributor = Object.entries(filteredContributorLineCount).find(([key, value]) => key !== pullRequestOwner);
-        if (nonOwnerContributor) {
+        if (nonOwnerContributor && nonOwnerContributor[1] > 0) {
             suggestedReviewer = nonOwnerContributor[0]
             return suggestedReviewer;
         } else {
             console.log("No Suitable Reviewer Found!");
             return "No Suitable Reviewer Found!";
         }
-    } else {
+    } else if(set === 1) {
         if (suggestedReviewer !== '') {
             await octokit.request(`POST /repos/${owner}/${repo}/pulls/${pullNumber}/requested_reviewers`, {
                 reviewers: [
@@ -94,6 +94,11 @@ export async function suggestReviewer(context, set) {
                 }
             });
         }
+    }else{
+         suggestedReviewer = ''
+         owner = ''
+         repo = ''
+         pullNumber = 0
     }
 }
 
