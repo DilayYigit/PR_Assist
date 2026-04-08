@@ -2,7 +2,7 @@ import {OpenAIClient, AzureKeyCredential} from '@azure/openai'
 import axios from 'axios'
 
 const endpoint = "https://amirtest.openai.azure.com/";
-const azureApiKey = '5a245cbd34374444a17808a1160b32d3';
+const azureApiKey = '{Azure_Api_Key}';
 
 
 export async function generateBody(context) {
